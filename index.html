@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Puzzle Interactiv</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#fafafa; padding:20px; }
+  .grid { display:grid; grid-template-columns: repeat(7,50px); gap:6px; margin:20px 0; }
+  .cell { width:50px; height:50px; background:white; border:1px solid #ccc; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:20px; }
+  .btn { padding:10px 16px; background:#333; color:#fff; border:none; cursor:pointer; margin-top:10px; }
+  .hidden { display:none; }
+  #qr { margin-top:20px; }
+</style>
+</head>
+<body>
+<h1>Puzzle Interactiv</h1>
+
+<!-- PUZZLE 1 -->
+<section id="p1">
+<h2>Puzzle 1</h2>
+<p>Cineva s-a născut într-o zi specială.<br>Nu pot fi două persoane speciale o dată, nu?</p>
+<div class="grid" id="grid1"></div>
+<p id="p1msg"></p>
+</section>
+
+<!-- PUZZLE 2 -->
+<section id="p2" class="hidden">
+<h2>Puzzle 2</h2>
+<p>Toate prăjiturile din cutie sunt izotopi ai elementului DULCIUM-20. Izotopii lui Dulcium au numărul atomic egal cu numărul total de atomi din compus. Dulcium-20 = ?</p>
+<input id="p2input" placeholder="Introdu numărul corect" />
+<button class="btn" onclick="solveP2()">Verifică</button>
+<p id="p2msg"></p>
+</section>
+
+<!-- PUZZLE 3 -->
+<section id="p3" class="hidden">
+<h2>Puzzle 3</h2>
+<p>O altă persoană la fel de specială s-a născut într-o zi specială. Dar trebuie să scazi o lună pentru a ajunge la codul corect.</p>
+<div class="grid" id="grid3"></div>
+<p id="p3msg"></p>
+</section>
+
+<!-- PUZZLE 4 -->
+<section id="p4" class="hidden">
+<h2>Puzzle 4</h2>
+<p>Mixul perfect: Ai 5 tipuri de prăjituri în față, fiecare cu un cod ascuns. Alege câte una din fiecare tip astfel încât suma codurilor să fie exact SECRETUL. Observă tipurile și combină-le cu atenție.</p>
+<input id="p4input" placeholder="Introdu suma corectă" />
+<button class="btn" onclick="solveP4()">Verifică</button>
+<p id="p4msg"></p>
+</section>
+
+<!-- META-PUZZLE -->
+<section id="meta" class="hidden">
+<h2>Meta-Puzzle</h2>
+<p>Introdu literele obținute din puzzle-uri în ordinea corectă pentru a descoperi cuvântul secret.</p>
+<input id="metaInput" maxlength="4" />
+<button class="btn" onclick="checkMeta()">Trimite</button>
+<p id="metamsg"></p>
+<div id="qr"></div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script>
+// PUZZLE 1
+const grid1 = document.getElementById('grid1');
+for(let i=1;i<=28;i++){
+  const c=document.createElement('div');
+  c.className='cell';
+  c.textContent='•';
+  c.onclick=()=>{
+    if(i===10){
+      c.textContent='S';
+      document.getElementById('p1msg').textContent='🔓 Ai deblocat litera: S';
+      document.getElementById('p2').classList.remove('hidden');
+    }
+  };
+  grid1.appendChild(c);
+}
+
+// PUZZLE 2
+function solveP2(){
+  const val = document.getElementById('p2input').value;
+  if(val==='20'){
+    document.getElementById('p2msg').textContent='🔓 Ai deblocat litera: N';
+    document.getElementById('p3').classList.remove('hidden');
+  } else {
+    document.getElementById('p2msg').textContent='Greșit, încearcă din nou.';
+  }
+}
+
+// PUZZLE 3
+grid3 = document.getElementById('grid3');
+for(let i=1;i<=28;i++){
+  const c=document.createElement('div');
+  c.className='cell';
+  c.textContent='•';
+  c.onclick=()=>{
+    if(i===26){
+      c.textContent='I';
+      document.getElementById('p3msg').textContent='🔓 Ai deblocat litera: I';
+      document.getElementById('p4').classList.remove('hidden');
+    }
+  };
+  grid3.appendChild(c);
+}
+
+// PUZZLE 4
+function solveP4(){
+  const val = document.getElementById('p4input').value;
+  if(val==='10'){
+    document.getElementById('p4msg').textContent='🔓 Ai deblocat litera: A';
+    document.getElementById('meta').classList.remove('hidden');
+  } else {
+    document.getElementById('p4msg').textContent='Greșit, încearcă din nou.';
+  }
+}
+
+// META
+function checkMeta(){
+  const v=document.getElementById('metaInput').value.toUpperCase();
+  if(v==='NASI'){
+    document.getElementById('metamsg').innerHTML='Felicitări!<br>Drept premiu, scanează următorul cod QR.';
+    const qr = new QRious({
+      element: document.createElement('canvas'),
+      size: 240,
+      value: 'https://drive.google.com/file/d/1luVwZPGp_fUOD-PjXtG-56CXuDujUSWh/view?usp=drive_link'
+    });
+    document.getElementById('qr').appendChild(qr.element);
+  } else {
+    document.getElementById('metamsg').textContent='Greșit.';
+  }
+}
+</script>
+</body>
+</html>
